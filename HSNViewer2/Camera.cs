@@ -96,39 +96,43 @@ namespace BetterSkinned
 
         public void Update(GraphicsDevice graphics, GameTime gameTime)
         {
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            if (padPitchYaw)
-            {
-                Yaw(-gamePadState.ThumbSticks.Right.X * 0.05f);
-                Pitch(gamePadState.ThumbSticks.Right.Y * 0.05f);
-            }
+            // Appears to work when you look in the debugger but doesn't really do anything
+            // Most likely it is because the XNA Mouse structure is not accurate but that is
+            // just a guess.
 
-            MouseState mouseState = Mouse.GetState();
-            if (graphics.Viewport.Bounds.Contains(mouseState.X, mouseState.Y))
-            {
+            //GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            //if (gamePadState.IsConnected && padPitchYaw)
+            //{
+            //    Yaw(-gamePadState.ThumbSticks.Right.X * 0.05f);
+            //    Pitch(gamePadState.ThumbSticks.Right.Y * 0.05f);
+            //}
 
-                if (mousePitchYaw && mouseState.LeftButton == ButtonState.Pressed &&
-                    lastMouseState.LeftButton == ButtonState.Pressed)
-                {
-                    float changeY = mouseState.Y - lastMouseState.Y;
-                    Pitch(-changeY * 0.005f);
+            //MouseState mouseState = Mouse.GetState();
+            //if (graphics.Viewport.Bounds.Contains(mouseState.X, mouseState.Y))
+            //{
 
-                    float changeX = mouseState.X - lastMouseState.X;
-                    Yaw(changeX * 0.005f);
-                }
+            //    if (mousePitchYaw && mouseState.LeftButton == ButtonState.Pressed &&
+            //        lastMouseState.LeftButton == ButtonState.Pressed)
+            //    {
+            //        float changeY = mouseState.Y - lastMouseState.Y;
+            //        Pitch(-changeY * 0.005f);
 
-                if (mousePanTilt && mouseState.RightButton == ButtonState.Pressed &&
-                         lastMouseState.RightButton == ButtonState.Pressed)
-                {
-                    float changeY = mouseState.Y - lastMouseState.Y;
-                    Tilt(changeY * 0.0025f);
+            //        float changeX = mouseState.X - lastMouseState.X;
+            //        Yaw(changeX * 0.005f);
+            //    }
 
-                    float changeX = mouseState.X - lastMouseState.X;
-                    Pan(changeX * 0.0025f);
-                }
+            //    if (mousePanTilt && mouseState.RightButton == ButtonState.Pressed &&
+            //             lastMouseState.RightButton == ButtonState.Pressed)
+            //    {
+            //        float changeY = mouseState.Y - lastMouseState.Y;
+            //        Tilt(changeY * 0.0025f);
 
-                lastMouseState = mouseState;
-            }
+            //        float changeX = mouseState.X - lastMouseState.X;
+            //        Pan(changeX * 0.0025f);
+            //    }
+
+            //    lastMouseState = mouseState;
+            //}
         }
 
         #endregion
@@ -230,6 +234,23 @@ namespace BetterSkinned
 
             Matrix M = t1 * r * t2;
             center = Vector3.Transform(center, M);
+            ComputeView();
+        }
+
+        public void Zoom(float distance)
+        {
+            // Need a vector in the camera X direction
+            Vector3 cameraZ = eye - center;
+            Vector3 cameraZHat = cameraZ;
+
+            float len = cameraZHat.Length();
+            if (len > 0)
+                cameraZHat.Normalize();
+            else
+                cameraZHat = new Vector3(0, 0, 1);
+
+
+            eye += distance *  cameraZHat;
             ComputeView();
         }
 

@@ -50,6 +50,10 @@ namespace HSNViewer2
 
         Camera camera;
 
+        // A yaw and pitch applied to the second viewport based on input
+        private float yaw = 0f;
+        private float pitch = 0f;
+
         /// <summary>
         /// The animated model we are displaying
         /// </summary>
@@ -179,5 +183,43 @@ namespace HSNViewer2
             model.Update(deltaTime, Vector3.Zero);
  
         }
+
+        // Invoked when the mouse moves over the second viewport
+        private void xnaControl1_MouseMove(object sender, HwndMouseEventArgs e)
+        {
+            // If the left or right buttons are down, we adjust the yaw and pitch of the cube
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed )
+            {
+                yaw = (float)(e.Position.X - e.PreviousPosition.X) * .01f;
+                pitch = (float)(e.Position.Y - e.PreviousPosition.Y) * .01f;
+
+                camera.Yaw(yaw);
+                camera.Pitch(pitch);
+            }
+            if ( e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                float pan = (float)(e.Position.X - e.PreviousPosition.X) * .01f;
+                camera.Pan(pan);
+            }
+        }
+
+        private void xnaControl1_MouseWheel(object sender, HwndMouseEventArgs e)
+        {
+            int delta = (e.WheelDelta >> 16) / NativeMethods.WHEEL_DELTA;
+            camera.Zoom(delta * 5.0f);
+        }
+
+        // We use the left mouse button to do exclusive capture of the mouse so we can drag and drag
+        // to rotate the cube without ever leaving the control
+        private void xnaControl1_HwndLButtonDown(object sender, HwndMouseEventArgs e)
+        {
+            xnaControl1.CaptureMouse();
+        }
+
+        private void xnaControl1_HwndLButtonUp(object sender, HwndMouseEventArgs e)
+        {
+            xnaControl1.ReleaseMouseCapture();
+        }
+
     }
 }

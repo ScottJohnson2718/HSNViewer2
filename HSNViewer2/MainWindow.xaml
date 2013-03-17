@@ -27,7 +27,10 @@
             <!-- We can add multiple GraphicsDeviceControls for rendering with the XNA Framework. -->
             <my:GraphicsDeviceControl x:Name="xnaControl1" Grid.Column="1" Grid.Row="0"
                                       LoadContent="loadContent"
-                                      RenderXna="xnaControl1_RenderXna" />
+                                      HwndMouseMove="xnaControl1_MouseMove"
+                                      HwndMouseWheel="xnaControl1_MouseWheel"
+                                      RenderXna="xnaControl1_RenderXna"
+                                      />
 
         </Grid>
     </Grid>
