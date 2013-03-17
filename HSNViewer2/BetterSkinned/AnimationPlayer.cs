@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Linq;
+using System.Linq;
 using System.Text;
 using AnimationAux;
 using System.ComponentModel;
@@ -145,8 +145,9 @@ namespace BetterSkinned
         /// <param name="delta"></param>
         public void Update(GameTime gameTime)
         {
-            Position = Position + (float)gameTime.ElapsedGameTime.TotalSeconds;
- //Position = 0;
+// break animation!  Don't play it
+            //Position = Position + (float)gameTime.ElapsedGameTime.TotalSeconds;
+ Position = 0;
             if (looping && Position >= Duration)
                 Position = 0;
 
