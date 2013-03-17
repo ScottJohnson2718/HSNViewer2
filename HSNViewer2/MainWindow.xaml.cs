@@ -35,10 +35,11 @@ namespace HSNViewer2
         //ContentBuilder contentBuilder;
         ContentManager contentManager;
      
-        //private CubePrimitive cube;
+        private CubePrimitive cube;
 
         // We use a Stopwatch to track our total time for cube animation
         private Stopwatch watch = new Stopwatch();
+         private TimeSpan lastTime;
 
         // A yaw and pitch applied to the second viewport based on input
         //private float yaw = 0f;
@@ -56,11 +57,12 @@ namespace HSNViewer2
 
         AnimationPlayer player;
 
-        private double totalGameTime = 0.0;
+        private TimeSpan totalGameTime = new TimeSpan();
  
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -82,9 +84,15 @@ namespace HSNViewer2
             watch.Start();
 
            // contentBuilder = new ContentBuilder();
-
+            // Init everything that depends on a GraphicsDevice for construction
             camera = new Camera(e.GraphicsDevice);
+            camera.Eye = new Vector3(0.0f, 60.0f, -80.0f);
+            camera.Center = new Vector3(1, 60, 0);
 
+            camera.Initialize();
+
+
+           cube = new CubePrimitive(e.GraphicsDevice);
 
           // Load the model we will display
             //model = new AnimatedModel("Victoria-hat-tpose");
@@ -111,23 +119,10 @@ namespace HSNViewer2
             // Build this new model data.
             //string buildError = contentBuilder.Build();
 
-            //if (string.IsNullOrEmpty(buildError))
-            //{
-                // If the build succeeded, use the ContentManager to
-                // load the temporary .xnb file that we just created.
-               model.LoadContent(contentManager);
-            //}
-            //else
-            //{
-                // If the build failed, display an error message.
-            //    MessageBox.Show(buildError, "Error");
-            //}
+             // load the temporary .xnb file that we just created.
+             model.LoadContent(contentManager);
+ 
             Cursor = Cursors.Arrow;
-
-
-            // Load the model that has an animation clip it in
-            //dance = new AnimatedModel("Victoria-hat-dance");
-            //dance.LoadContent(Content);
 
             // Obtain the clip we want to play. I'm using an absolute index, 
             // because XNA 4.0 won't allow you to have more than one animation
@@ -138,6 +133,7 @@ namespace HSNViewer2
             // And play the clip
             player = model.PlayClip(clip);
             player.Looping = true;
+
         }
 
         /// <summary>
@@ -146,11 +142,17 @@ namespace HSNViewer2
         private void xnaControl1_RenderXna(object sender, GraphicsDeviceEventArgs e)
         {
             // Fake the XNA update call
-            totalGameTime +=  watch.Elapsed.TotalSeconds;
-            TimeSpan elapsedSpan = TimeSpan.FromSeconds( watch.Elapsed.TotalSeconds );
-            TimeSpan totalSpan = TimeSpan.FromSeconds( totalGameTime );
-            GameTime gameTime = new GameTime( totalSpan, elapsedSpan );
-
+            if (lastTime == null)
+            {
+                lastTime = new TimeSpan();
+                lastTime = watch.Elapsed;
+            }
+            
+            TimeSpan deltaTime = watch.Elapsed - lastTime;
+            totalGameTime += deltaTime;
+            GameTime gameTime = new GameTime(totalGameTime, deltaTime);
+            lastTime = watch.Elapsed;
+ 
             Update(gameTime);
             camera.Update(e.GraphicsDevice, gameTime);
 
@@ -161,18 +163,10 @@ namespace HSNViewer2
             // Compute some values for the cube rotation
             float time = (float)watch.Elapsed.TotalSeconds;
 
-            // Create the world-view-projection matrices for the cube and camera
-            //Matrix world = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
-           // Matrix world = Matrix.Identity;
-            //Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 2.5f), Vector3.Zero, Vector3.Up);
-           // Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, e.GraphicsDevice.Viewport.AspectRatio, 1, 10);
-
-            // Get the color from our sliders (don't have a slider)
-            //Color color = new Color((float)rComponent.Value, (float)gComponent.Value, (float)bComponent.Value);
             Color color = Color.Aqua;
 
-            // Draw a cube
-            //cube.Draw(world, view, projection, color);
+            // Draw a cube so that it draws something while I debug the Animated Model
+            cube.Draw(Matrix.Identity, camera.View, camera.Projection, color);
 
 
             model.Draw(e.GraphicsDevice, camera, Matrix.Identity);
