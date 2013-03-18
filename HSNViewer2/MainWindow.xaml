@@ -2,14 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:my="clr-namespace:WpfHostedXna"
-        Title="HSN Tool" Height="350" Width="525" Loaded="Window_Loaded">
-    <Grid Height="305" Width="506">
+        Title="HSN Tool" Height="355" Width="676" Loaded="Window_Loaded">
+    <Grid Height="307" Width="597"  HorizontalAlignment="Left" Name="Grid1" VerticalAlignment="Top">
         <Grid.RowDefinitions>
-            <RowDefinition Height="22*" />
-            <RowDefinition Height="256*" />
-            <RowDefinition Height="27*" />
-        </Grid.RowDefinitions>
-        <Menu Height="22" HorizontalAlignment="Left" Name="menu1" VerticalAlignment="Top" Width="503" >
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+         </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Grid.Column="1" Height="22" HorizontalAlignment="Stretch" Name="FileMenu" VerticalAlignment="Top"  >
             <MenuItem Header="_File" >
                 <MenuItem Header="_Exit" />
             </MenuItem>
@@ -18,20 +17,20 @@
                 <MenuItem Header="Calibrated Quats" />
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1" Height="256" HorizontalAlignment="Left" Name="grid1" VerticalAlignment="Top" Width="506">
+        <Grid Grid.Row="1" Grid.Column="0" Height="256" HorizontalAlignment="Left" Name="grid1" VerticalAlignment="Top" Width="506">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="115*" />
-                <ColumnDefinition Width="388*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Height="256" HorizontalAlignment="Left" Name="stackPanel1" VerticalAlignment="Top" Width="115" />
+            <StackPanel Height="256" HorizontalAlignment="Left" Name="stackPanel1" VerticalAlignment="Top" Width="115">
+                <Button Content="Stop" Height="23" Name="PlayStop" Width="75" Click="PlayStopButton_PlayStop" />
+            </StackPanel>
             <!-- We can add multiple GraphicsDeviceControls for rendering with the XNA Framework. -->
-            <my:GraphicsDeviceControl x:Name="xnaControl1" Grid.Column="1" Grid.Row="0"
-                                      LoadContent="loadContent"
+            <my:GraphicsDeviceControl x:Name="xnaControl1" LoadContent="loadContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                       HwndMouseMove="xnaControl1_MouseMove"
                                       HwndMouseWheel="xnaControl1_MouseWheel"
-                                      RenderXna="xnaControl1_RenderXna"
-                                      />
+                                      RenderXna="xnaControl1_RenderXna" Margin="112,0,-482,0" Width="485" />
 
         </Grid>
+        <Slider Grid.Row="1" Height="26" HorizontalAlignment="Left" Margin="0,259,0,0" Name="slider1" VerticalAlignment="Top" Width="594" />
     </Grid>
 </Window>

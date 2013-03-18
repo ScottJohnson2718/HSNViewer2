@@ -54,6 +54,8 @@ namespace HSNViewer2
         private float yaw = 0f;
         private float pitch = 0f;
 
+        private bool playing = true;
+
         /// <summary>
         /// The animated model we are displaying
         /// </summary>
@@ -181,6 +183,11 @@ namespace HSNViewer2
         private void Update(GameTime deltaTime)
         {
             model.Update(deltaTime, Vector3.Zero);
+
+            float percentPlayed = player.Position / player.Duration;
+
+            // Is this data binding?  How do I set the value?
+            //PlayStopButton.
  
         }
 
@@ -206,7 +213,7 @@ namespace HSNViewer2
         private void xnaControl1_MouseWheel(object sender, HwndMouseEventArgs e)
         {
             int delta = (e.WheelDelta >> 16) / NativeMethods.WHEEL_DELTA;
-            camera.Zoom(delta * 5.0f);
+            camera.Zoom(-delta * 5.0f);
         }
 
         // We use the left mouse button to do exclusive capture of the mouse so we can drag and drag
@@ -219,6 +226,15 @@ namespace HSNViewer2
         private void xnaControl1_HwndLButtonUp(object sender, HwndMouseEventArgs e)
         {
             xnaControl1.ReleaseMouseCapture();
+        }
+
+        private void PlayStopButton_PlayStop(object sender, RoutedEventArgs e)
+        {
+            playing = !playing;
+            if (playing)
+            {
+                // todo : so much to learn
+            }
         }
 
     }
