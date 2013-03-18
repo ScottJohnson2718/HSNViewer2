@@ -105,18 +105,19 @@ namespace HSNViewer2
             model = new AnimatedModel("dude");
 
             // Default to the directory which contains our content files.
-            //string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            //string relativePath = System.IO.Path.Combine(assemblyLocation, "../../../../Content");
-            //string contentPath = System.IO.Path.GetFullPath(relativePath);
+            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            string relativePath = System.IO.Path.Combine(assemblyLocation, "../../../Content");
+            string contentPath = System.IO.Path.GetFullPath(relativePath);
 
             // Since the build project doesn't work, use the builder
             //contentBuilder.Add("f:\\Content\\Dude.fbx", "Model", null, "ModelProcessor");
 
-    // THe content project doesn't work away from the XNA Game project.  It has a content reference to the BetterSkinned
-    // Content project.  I haven't found a way to get the content project to build in the context of this Solution.
-    // Manually copied the results of the content pipeline to a Content directory.  A clean of the build may remove
-    // it entirely.  This project is currently broken.
-            contentManager = new ContentManager(xnaControl1.Services, "f:\\Content");
+            // The Content project creates the .XNB files.  The XNA game project has a reference to it that makes it build.
+            // On a successful build of the XNA game project there is a custom build step to xcopy the files from the XNA Game
+            // project to a top directory.  Then we create a relative path "contentPath" from the location of the HSNViewer2.exe
+            // to that top path.  This makes it so that the content pipeline creates the XNB files and the HSNViewer2 project
+            // finds those files without any manual steps on your part.
+            contentManager = new ContentManager(xnaControl1.Services, contentPath);
 
             Cursor = Cursors.Wait;
 
